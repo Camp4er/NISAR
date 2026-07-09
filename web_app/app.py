@@ -3,10 +3,10 @@ import numpy as np
 import json, base64, math
 from pathlib import Path
 from datetime import datetime
-import sys
-import os
-sys.path.insert(0, os.path.dirname(__file__))
-from qa_engine import get_answer
+import sys, os
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import importlib
+get_answer = importlib.import_module('qa_engine').get_answer
 
 app = Flask(__name__)
 
