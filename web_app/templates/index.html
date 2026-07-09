@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NISAR — Shillong Plateau Seismic Monitor</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<!-- ALERT DIALOG OVERLAY -->
+<div id="alert-overlay" class="overlay hidden">
+    <div class="alert-dialog" id="alert-dialog">
+        <div class="alert-dialog-header">
+            <div class="alert-pulse-dot"></div>
+            <span id="alert-dialog-level">⚠️ SEISMIC ALERT</span>
+            <button class="alert-x" onclick="dismissAlert()">✕</button>
+        </div>
+        <div class="alert-dialog-body">
+            <div class="alert-mag-row">
+                <div class="alert-mag-box">
+                    <div class="alert-mag-val" id="dlg-mag">M 6.8</div>
+                    <div class="alert-mag-lbl">Estimated Magnitude</div>
+                </div>
+                <div class="alert-mag-box">
+                    <div class="alert-mag-val red" id="dlg-pop">3–5M</div>
+                    <div class="alert-mag-lbl">People at Risk</div>
+                </div>
+                <div class="alert-mag-box">
+                    <div class="alert-mag-val orange" id="dlg-vel">4.2</div>
+                    <div class="alert-mag-lbl">cm/acquisition</div>
+                </div>
+            </div>
+            <div class="alert-summary" id="dlg-summary">
+                Anomalous surface deformation detected along the Oldham Fault.
+            </div>
+            <button class="see-more-btn" onclick="toggleDetails()">
+                ▼ See Technical Details
+            </button>
+            <div class="alert-details hidden" id="alert-details">
+                <div id="dlg-full-msg"></div>
+            </div>
+        </div>
+        <div class="alert-dialog-footer">
+            <button class="btn-dismiss" onclick="dismissAlert()">Dismiss Alert</button>
+            <button class="btn-risk" onclick="dismissAlert(); showTab('risk')">View Risk Monitor →</button>
+        </div>
+    </div>
+</div>
+
+<!-- HEADER -->
+<header>
+    <div class="hdr">
+        <div class="hdr-left">
+            <span class="hdr-logo">🛰️</span>
+            <div>
+                <div class="hdr-title">NISAR · Shillong Plateau Seismic Monitor</div>
+                <div class="hdr-sub">InSAR Land Deformation Analysis · Northeast India · Oldham Fault</div>
+            </div>
+        </div>
+        <div class="hdr-right">
+            <span class="badge">NASA · ISRO</span>
+            <span class="badge live">● Live</span>
+            <button class="demo-btn" onclick="triggerDemoAlert()">🚨 Demo Alert</button>
+        </div>
+    </div>
+</header>
+
+<!-- NAV TABS -->
+<nav class="nav">
+    <button class="navtab active" id="navtab-dashboard" onclick="showTab('dashboard')">📊 Dashboard</button>
+    <button class="navtab" id="navtab-risk"      onclick="showTab('risk')">🚨 Risk Monitor</button>
+    <button class="navtab" id="navtab-timeseries" onclick="showTab('timeseries')">📈 Time Series</button>
+    <button class="navtab" id="navtab-about"     onclick="showTab('about')">ℹ️ About</button>
+</nav>
+
+<main>
+
+<!-- ══════════ DASHBOARD ══════════ -->
+<div class="tab active" id="tab-dashboard">
+
+    <div class="stat-row">
+        <div class="stat-card">
+            <div class="stat-val green" id="s-uplift">--</div>
+            <div class="stat-lbl">Max Uplift (cm)</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-val red" id="s-subs">--</div>
+            <div class="stat-lbl">Max Subsidence (cm)</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-val" id="s-mean">--</div>
+            <div class="stat-lbl">Mean Displacement (cm)</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-val blue" id="s-px">--</div>
+            <div class="stat-lbl">Valid Pixels Analyzed</div>
+        </div>
+    </div>
+
+    <div class="two-col">
+        <div class="card">
+            <div class="card-hdr">
+                <span>🗺️ InSAR Displacement Map</span>
+                <span class="pill">Sentinel-1 / NISAR Pipeline</span>
+            </div>
+            <div class="card-body">
+                <img id="disp-map" src="" alt="Loading map...">
+                <p class="note">LOS surface displacement over the Shillong Plateau.
+                Red = uplift · Blue = subsidence · Coherence threshold: 0.5</p>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-hdr">
+                <span>📊 Historical Seismic Events</span>
+                <span class="pill">1897 – 2023</span>
+            </div>
+            <div class="card-body">
+                <img id="hist-chart" src="" alt="Loading chart...">
+                <p class="note">Major earthquakes along the Oldham Fault &
+                surrounding fault systems in Northeast India.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="two-col">
+        <div class="card">
+            <div class="card-hdr"><span>ℹ️ About This Study</span></div>
+            <div class="card-body">
+                <div class="info-item">
+                    <div class="info-label">🎯 Study Region</div>
+                    <div class="info-text">Shillong Plateau, Meghalaya — one of Asia's most seismically active zones, sitting on the Oldham Fault responsible for the 1897 M8.1 earthquake.</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">🛰️ Why NISAR?</div>
+                    <div class="info-text">NISAR's L-band SAR penetrates dense vegetation of NE India, enabling deformation monitoring previously impossible with C-band satellites like Sentinel-1.</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">📡 Data Source</div>
+                    <div class="info-text">ARIA S1 GUNW interferometric products from NASA's Alaska Satellite Facility (ASF DAAC), processed through the NISAR analysis pipeline.</div>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-hdr"><span>💬 Ask About This Research</span></div>
+            <div class="card-body">
+                <div class="chips">
+                    <span class="chip" onclick="ask('What is NISAR?')">What is NISAR?</span>
+                    <span class="chip" onclick="ask('What did the analysis find?')">Analysis findings</span>
+                    <span class="chip" onclick="ask('What is the Oldham Fault?')">Oldham Fault</span>
+                    <span class="chip" onclick="ask('How does InSAR work?')">How InSAR works</span>
+                    <span class="chip" onclick="ask('NISAR vs Sentinel-1')">NISAR vs Sentinel-1</span>
+                    <span class="chip" onclick="ask('What is the earthquake risk?')">Earthquake risk</span>
+                </div>
+                <div class="chatbox" id="chatbox">
+                    <div class="msg bot">👋 Ask me anything about NISAR, InSAR, the Shillong Plateau, or this analysis!</div>
+                </div>
+                <div class="chat-row">
+                    <input id="chat-in" type="text" placeholder="Ask a question..."
+                           onkeypress="if(event.key==='Enter')sendQ()">
+                    <button onclick="sendQ()">Ask ➤</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════ RISK MONITOR ══════════ -->
+<div class="tab hidden" id="tab-risk">
+
+    <div class="two-col">
+        <div class="card">
+            <div class="card-hdr">
+                <span>🚨 Current Risk Assessment</span>
+                <span class="pill" id="risk-ts">--</span>
+            </div>
+            <div class="card-body">
+                <div class="risk-top">
+                    <div class="risk-orb" id="risk-orb">
+                        <div class="risk-orb-label" id="risk-lbl">--</div>
+                        <div class="risk-orb-score" id="risk-score">0/100</div>
+                    </div>
+                    <div class="risk-kv">
+                        <div class="kv"><span class="kv-k">Deformation Velocity</span><span class="kv-v" id="kv-vel">--</span></div>
+                        <div class="kv"><span class="kv-k">Est. Max Magnitude</span><span class="kv-v orange" id="kv-mag">--</span></div>
+                        <div class="kv"><span class="kv-k">Affected Population</span><span class="kv-v red" id="kv-pop">--</span></div>
+                        <div class="kv"><span class="kv-k">Fault System</span><span class="kv-v">Oldham Fault, NE India</span></div>
+                        <div class="kv"><span class="kv-k">Method</span><span class="kv-v">InSAR (Sentinel-1/NISAR)</span></div>
+                    </div>
+                </div>
+                <div class="risk-msg-box" id="risk-msg">Loading...</div>
+                <div class="risk-btns">
+                    <button class="rbtn red" onclick="triggerDemoAlert()">🚨 Trigger Demo Alert</button>
+                    <button class="rbtn blue" onclick="loadRisk()">🔄 Refresh</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-hdr"><span>📋 Risk Level Guide</span></div>
+            <div class="card-body">
+                <div class="guide-item g-green">
+                    <div class="guide-dot"></div>
+                    <div><strong>NORMAL</strong><p>Deformation within historical baseline. Routine monitoring only.</p></div>
+                </div>
+                <div class="guide-item g-yellow">
+                    <div class="guide-dot"></div>
+                    <div><strong>ELEVATED</strong><p>Velocity 1.5× above baseline. Increase monitoring frequency.</p></div>
+                </div>
+                <div class="guide-item g-orange">
+                    <div class="guide-dot"></div>
+                    <div><strong>HIGH RISK</strong><p>Velocity 2× baseline. Notify authorities. Activate preparedness plans.</p></div>
+                </div>
+                <div class="guide-item g-red">
+                    <div class="guide-dot"></div>
+                    <div><strong>CRITICAL</strong><p>Velocity 3×+ baseline. Immediate action. Consider evacuation orders.</p></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-hdr">
+            <span>📡 Monitoring Parameters</span>
+            <span class="pill">Real-time Indicators</span>
+        </div>
+        <div class="card-body">
+            <div class="param-grid">
+                <div class="param">
+                    <div class="param-icon">📏</div>
+                    <div class="param-name">Deformation Rate</div>
+                    <div class="param-val" id="p-vel">--</div>
+                    <div class="param-unit">cm / acquisition</div>
+                    <div class="pbar"><div class="pfill" id="pf-vel"></div></div>
+                </div>
+                <div class="param">
+                    <div class="param-icon">🌊</div>
+                    <div class="param-name">Displacement Variability</div>
+                    <div class="param-val" id="p-std">--</div>
+                    <div class="param-unit">std deviation (cm)</div>
+                    <div class="pbar"><div class="pfill" id="pf-std"></div></div>
+                </div>
+                <div class="param">
+                    <div class="param-icon">⬇️</div>
+                    <div class="param-name">Max Subsidence</div>
+                    <div class="param-val" id="p-sub">--</div>
+                    <div class="param-unit">cm (away from satellite)</div>
+                    <div class="pbar"><div class="pfill" id="pf-sub"></div></div>
+                </div>
+                <div class="param">
+                    <div class="param-icon">🎯</div>
+                    <div class="param-name">Overall Risk Score</div>
+                    <div class="param-val" id="p-score">--</div>
+                    <div class="param-unit">out of 100</div>
+                    <div class="pbar"><div class="pfill" id="pf-score"></div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- ══════════ TIME SERIES ══════════ -->
+<div class="tab hidden" id="tab-timeseries">
+    <div class="card">
+        <div class="card-hdr">
+            <span>📈 Deformation Time Series</span>
+            <span class="pill">Multi-temporal InSAR</span>
+        </div>
+        <div class="card-body" id="ts-body">
+            <div class="loading">⏳ Loading time series data...</div>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════ ABOUT ══════════ -->
+<div class="tab hidden" id="tab-about">
+    <div class="two-col">
+        <div class="card">
+            <div class="card-hdr"><span>🛰️ NISAR Mission</span></div>
+            <div class="card-body">
+                <div class="info-item"><div class="info-label">What is NISAR?</div><div class="info-text">NISAR (NASA-ISRO Synthetic Aperture Radar) is a joint Earth observation satellite. It uses L-band and S-band SAR to measure surface deformation with millimeter precision globally.</div></div>
+                <div class="info-item"><div class="info-label">Why L-band?</div><div class="info-text">L-band radar (23.8 cm wavelength) penetrates cloud cover, smoke, and dense vegetation — critical for Northeast India where optical satellites are blocked by cloud and forest canopy.</div></div>
+                <div class="info-item"><div class="info-label">NISAR vs Sentinel-1</div><div class="info-text">Sentinel-1 uses C-band (5.5 cm) with limited vegetation penetration. NISAR's L-band is far superior for forested remote regions like the Shillong Plateau.</div></div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-hdr"><span>🌏 The Oldham Fault</span></div>
+            <div class="card-body">
+                <div class="info-item"><div class="info-label">What is it?</div><div class="info-text">A major reverse fault along the southern edge of the Shillong Plateau. It caused the 1897 Great Assam Earthquake (M8.1) — one of the largest ever recorded.</div></div>
+                <div class="info-item"><div class="info-label">Current Status</div><div class="info-text">The fault remains locked, continuously accumulating stress from the India-Eurasia tectonic collision. One of India's highest seismic risk zones.</div></div>
+                <div class="info-item"><div class="info-label">Why Monitor?</div><div class="info-text">Over 10 million people live within the potential impact zone. Continuous InSAR monitoring is the only reliable way to track strain accumulation in this remote region.</div></div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-hdr"><span>🔬 Methodology</span></div>
+            <div class="card-body">
+                <div class="info-item"><div class="info-label">Data Pipeline</div><div class="info-text">ARIA S1 GUNW → h5py extraction → coherence masking (≥0.5) → phase-to-displacement conversion → time series analysis → risk assessment</div></div>
+                <div class="info-item"><div class="info-label">Displacement Formula</div><div class="info-text">LOS Displacement (cm) = (Unwrapped Phase ÷ 4π) × Wavelength × 100</div></div>
+                <div class="info-item"><div class="info-label">Magnitude Estimation</div><div class="info-text">Wells & Coppersmith (1994): M = 4.07 + 0.98 × log(Rupture Area km²)</div></div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-hdr"><span>⚠️ Limitations</span></div>
+            <div class="card-body">
+                <div class="info-item"><div class="info-label">Cannot Predict Earthquakes</div><div class="info-text">No system can reliably predict exact earthquake timing. This monitors risk indicators and provides hazard assessment — not prediction.</div></div>
+                <div class="info-item"><div class="info-label">Atmospheric Noise</div><div class="info-text">Water vapor can mimic deformation signals. Operational systems apply atmospheric correction (ERA5/GACOS) to separate real deformation from noise.</div></div>
+                <div class="info-item"><div class="info-label">12-Day Revisit</div><div class="info-text">Current data has 12-day gaps. NISAR's eventual 6-day revisit will significantly improve continuous monitoring capability.</div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</main>
+
+<footer>
+    <p>NISAR Mission Data Analysis · Shillong Plateau Seismic Monitor · Python · Flask · InSAR</p>
+    <p>Data: NASA ASF DAAC · ARIA S1 GUNW · Sentinel-1 C-Band · Wells & Coppersmith (1994)</p>
+</footer>
+
+<script src="/static/script.js"></script>
+</body>
+</html>

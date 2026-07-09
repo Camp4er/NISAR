@@ -1,0 +1,9 @@
+{
+  "region": "Shillong Plateau, Northeast India",
+  "fault": "Oldham Fault",
+  "valid_pixels": 604392,
+  "mean_displacement_cm": -8.159370422363281,
+  "max_uplift_cm": 4.050316333770752,
+  "max_subsidence_cm": -21.73735237121582,
+  "std_cm": 1.585799217224121
+}
