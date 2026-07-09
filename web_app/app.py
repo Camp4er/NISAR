@@ -7,7 +7,7 @@ from qa_engine import get_answer
 
 app = Flask(__name__)
 
-BASE      = Path(r"C:\Users\saxen\OneDrive\Desktop\NISAR_Project")
+BASE      = Path(__file__).parent.parent
 PROCESSED = BASE / "data" / "processed"
 OUTPUTS   = BASE / "outputs"
 RAW       = BASE / "data" / "raw"

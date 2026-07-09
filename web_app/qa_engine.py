@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 
 # Load deformation stats
-STATS_PATH = Path(r"C:\Users\saxen\OneDrive\Desktop\NISAR_Project\data\processed\deformation_stats.json")
+STATS_PATH = Path(__file__).parent.parent / "data" / "processed" / "deformation_stats.json"
 
 def load_stats():
     try:
